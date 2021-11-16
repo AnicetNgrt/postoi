@@ -1,3 +1,5 @@
+use postoi::{node::Node, user_api::start_server};
+
 fn main() {
-    println!("Hello, world!");
+    start_server(Node::init(), "0.0.0.0:8000");
 }

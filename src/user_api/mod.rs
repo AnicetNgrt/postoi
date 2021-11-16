@@ -5,10 +5,10 @@ use rouille::{input, router, Request, Response};
 
 use crate::{blockchain::Block, node::Node};
 
-pub fn start(node: Node) {
+pub fn start_server(node: Node, address: &str) {
     let node = RwLock::new(node);
 
-    rouille::start_server("0.0.0.0:80", move |request| {
+    rouille::start_server(address, move |request| {
         router!(request,
             (GET) (/) => {
                 Response::text("Hello")
