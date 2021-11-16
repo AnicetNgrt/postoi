@@ -1,6 +1,8 @@
 use chrono::{NaiveDateTime, Utc};
+use serde::Serialize;
 use sha2::{Digest, Sha256};
 
+#[derive(Serialize)]
 pub struct Blockchain {
     pub blocks: Vec<Block>,
 }
@@ -10,6 +12,16 @@ impl Blockchain {
         let mut blocks = Vec::<Block>::new();
         blocks.push(Block::genesis());
         Blockchain { blocks }
+    }
+
+    pub fn mint_next_block(&mut self, data: String) -> &Block {
+        let next_block = self
+            .blocks
+            .last()
+            .expect("Should not mint on empty blockchain")
+            .generate_next(data);
+        self.blocks.push(next_block);
+        self.blocks.last().unwrap()
     }
 
     pub fn check_integrity(blocks: &Vec<Block>) -> Result<(), (usize, IntegrityViolation)> {
@@ -41,7 +53,7 @@ pub enum IntegrityViolation {
     InvalidHash,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Serialize)]
 pub struct Block {
     pub index: usize,
     pub hash: Option<String>,
